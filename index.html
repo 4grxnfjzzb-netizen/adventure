@@ -20,7 +20,7 @@
 <body>
     <div id="game-poster">
         <h1>مغامرة سعد</h1>
-        <p>تصميم وإخراج ورسم: ليون</p>
+        <p>تصميم وإخراج ورسم: القطوه ليون</p>
         <button class="btn" onclick="startGame()">ابدأ المغامرة 🚀</button>
     </div>
 
@@ -62,19 +62,23 @@
         Object.values(sounds).forEach(s => { s.load(); s.volume = 0.8; });
 
         let gameRunning = false;
-       function startGame() { 
-    // إخفاء بوستر البداية
-    document.getElementById('game-poster').style.display = 'none'; 
-    // إظهار شريط المهام العلوي
-    document.getElementById('ui-header').style.display = 'block';
-    
+    function startGame() { 
+    // 1. إخفاء الواجهة
+    const poster = document.getElementById('game-poster');
+    const ui = document.getElementById('ui-header');
+    if (poster) poster.style.display = 'none'; 
+    if (ui) ui.style.display = 'block';
+
+    // 2. تفعيل تشغيل اللعبة
     gameRunning = true; 
-    
-    // تشغيل فيديو الخلفية بصوت هادئ
+
+    // 3. تشغيل صوت الخلفية (الفيديو)
     const bg = document.getElementById('bg-video'); 
-    bg.muted = false; 
-    bg.volume = 0.15; // خفضنا الصوت لـ 15% عشان تسمعين الأصوات الثانية بوضوح
-    bg.play().catch(e => console.log("Video playback failed"));
+    if (bg) {
+        bg.muted = false; 
+        bg.volume = 0.15; // خفضنا الصوت لـ 15% عشان تسمعين الأصوات الثانية
+        bg.play().catch(e => console.log("Video Error: " + e));
+    }
 }
 
         // إعداد الصور
