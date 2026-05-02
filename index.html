@@ -52,6 +52,12 @@
    
 
     <script>
+        window.addEventListener('click', () => {
+    // تشغيل صامت وسريع لكل الأصوات لفتح المسار البرمجي لها
+    Object.values(sounds).forEach(s => {
+        s.play().then(() => { s.pause(); s.currentTime = 0; }).catch(() => {});
+    });
+}, { once: true });
         if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
     document.getElementById('mobile-controls').style.display = 'grid';
 }
@@ -98,6 +104,7 @@ bindMobileBtn('rightBtn', 'ArrowRight');
         sounds.walk.loop = true;
         sounds.walk.volume = 0.15;
         sounds.walk.playbackRate = 1.8;
+        sounds.walk.preload = 'auto'; // إجبار المتصفح على تحميل الصوت فوراً
         
         const charVol = 0.3;
         sounds.masa2o.volume = charVol;
@@ -111,12 +118,12 @@ bindMobileBtn('rightBtn', 'ArrowRight');
             poster.style.display = 'none'; 
             uiHeader.style.display = 'block'; 
             gameRunning = true; 
-            const bgVideo = document.getElementById('bg-video');
-            bgVideo.volume = 0.3; 
-            bgVideo.muted = false;
-            bgVideo.play().catch(e => console.log("Video Playback Error"));
-        }
-
+           const bgVideo = document.getElementById('bg-video');
+if (bgVideo) {
+    bgVideo.load(); // تحميل الملف في الذاكرة
+    bgVideo.muted = false;
+    bgVideo.play().catch(e => console.log("Playback Error"));
+}
         const assets = {
             front: ['saad1.png', 'saad2.png'],
             back: ['saadback1.png', 'saadback3.png'],
