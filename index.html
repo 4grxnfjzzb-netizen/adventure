@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>مغامرة سعد - نسخة الاحتراف النهائية</title>
+    <title>مغامرة سعد - النسخة النهائية الشاملة</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #1b3022; font-family: sans-serif; }
         canvas { display: block; }
@@ -63,7 +63,6 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // إعداد الأصوات بالأسماء الجديدة
         const sounds = {
             masa2o: new Audio('masa2o.mp3'),
             meow: new Audio('meow.mp3'),
@@ -80,12 +79,7 @@
         sounds.walk.loop = true;
         sounds.walk.volume = 0.15;
         sounds.walk.playbackRate = 1.8;
-        
-        const charVol = 0.4;
-        Object.values(sounds).forEach(s => {
-            s.load();
-            if(s !== sounds.walk) s.volume = charVol;
-        });
+        Object.values(sounds).forEach(s => s.load());
 
         let gameRunning = false;
         function startGame() { 
@@ -113,17 +107,17 @@
         assets.back.forEach(src => { let i = new Image(); i.src = src; imgs.back.push(i); });
         assets.layw.forEach(src => { let i = new Image(); i.src = src; imgs.layw.push(i); });
         ['side','mfta7','knz','knzOpen','shok','tree','shrh','party1','party2'].forEach(k => {
-            if(!Array.isArray(assets[k])) { imgs[k] = new Image(); imgs[k].src = assets[k]; }
+            imgs[k] = new Image(); imgs[k].src = assets[k];
         });
 
         let saad = { x: 50, y: 400, w: 60, h: 80, speed: 7, dir: 'front', frame: 0, flip: false, hasKey: false, won: false, dead: false, moveTimer: 0 };
-        let layanChar = { x: 550, y: 150, w: 90, h: 120, frame: 0, timer: 0, dialogStep: 0 };
+        let layan = { x: 550, y: 150, w: 90, h: 120, frame: 0, timer: 0, dialogStep: 0 };
         let camera = { x: 0, y: 0 };
         let partyParticles = [];
         let winScale = 0;
         let isDialogActive = false;
         let shrubPos = [];
-        for(let i=0; i<1000; i++) { shrubPos.push({ x: Math.random()*8000-4000, y: Math.random()*6000-3000 }); }
+        for(let i=0; i<1500; i++) { shrubPos.push({ x: Math.random()*10000-5000, y: Math.random()*8000-4000 }); }
 
         const roads = [
             { x: 0, y: 350, w: 600, h: 180 }, { x: 500, y: 100, w: 160, h: 430 },
@@ -144,6 +138,7 @@
 
         function showDialog(text, choices) {
             isDialogActive = true;
+            sounds.walk.pause();
             dialogText.innerText = text;
             choicesDiv.innerHTML = '';
             choices.forEach(c => {
@@ -158,21 +153,6 @@
 
         function closeDialog() { dialogBox.style.display = 'none'; isDialogActive = false; }
 
-        function handleDialogLogic() {
-            let dist = Math.hypot(saad.x - layanChar.x, saad.y - layanChar.y);
-            if (dist < 120 && layanChar.dialogStep === 0 && !isDialogActive) {
-                sounds.masa2o.play().catch(e => console.log("Audio Play error"));
-                showDialog("مسائو سعودي!", [
-                    { text: "مسائو", action: () => { nextDialog(); } },
-                    { text: "مسائو يا قطوة", action: () => { sounds.meow.play(); nextDialog(); } }
-                ]);
-                layanChar.dialogStep = 1;
-            } else if (dist > 300 && !saad.won) {
-                closeDialog();
-                layanChar.dialogStep = 0;
-            }
-        }
-
         function nextDialog() {
             setTimeout(() => {
                 sounds.teach.play();
@@ -186,7 +166,7 @@
                         showDialog("أجل دز أمها!", [{ text: "باي", action: closeDialog }]);
                     }}
                 ]);
-            }, 1000);
+            }, 800);
         }
 
         const keys = {};
@@ -200,47 +180,50 @@
                 return;
             }
 
-            let moving = false, nextX = saad.x, nextY = saad.y;
-            if (keys['ArrowUp']) { nextY -= saad.speed; saad.dir = 'back'; moving = true; }
-            else if (keys['ArrowDown']) { nextY += saad.speed; saad.dir = 'front'; moving = true; }
-            else if (keys['ArrowLeft']) { nextX -= saad.speed; saad.dir = 'side'; saad.flip = true; moving = true; }
-            else if (keys['ArrowRight']) { nextX += saad.speed; saad.dir = 'side'; saad.flip = false; moving = true; }
+            let moving = false, nx = saad.x, ny = saad.y;
+            if (keys['ArrowUp']) { ny -= saad.speed; saad.dir = 'back'; moving = true; }
+            else if (keys['ArrowDown']) { ny += saad.speed; saad.dir = 'front'; moving = true; }
+            else if (keys['ArrowLeft']) { nx -= saad.speed; saad.dir = 'side'; saad.flip = true; moving = true; }
+            else if (keys['ArrowRight']) { nx += saad.speed; saad.dir = 'side'; saad.flip = false; moving = true; }
 
             if (moving) {
                 if (sounds.walk.paused) sounds.walk.play().catch(e => {});
                 saad.moveTimer++;
                 if (saad.moveTimer % 12 === 0) saad.frame = (saad.frame + 1) % 2;
-                if (roads.some(r => (nextX+30) >= r.x && (nextX+30) <= r.x+r.w && (nextY+70) >= r.y && (nextY+70) <= r.y+r.h)) {
-                    saad.x = nextX; saad.y = nextY;
+                if (roads.some(r => (nx+30) >= r.x && (nx+30) <= r.x+r.w && (ny+70) >= r.y && (ny+70) <= r.y+r.h)) {
+                    saad.x = nx; saad.y = ny;
                 }
             } else {
                 sounds.walk.pause();
                 saad.frame = 0;
             }
 
-            layanChar.timer++;
-            if (layanChar.timer % 15 === 0) { layanChar.frame = (layanChar.frame + 1) % imgs.layw.length; }
-
-            handleDialogLogic();
+            layan.timer++; if (layan.timer % 15 === 0) layan.frame = (layan.frame + 1) % imgs.layw.length;
+            
+            let dist = Math.hypot(saad.x - layan.x, saad.y - layan.y);
+            if (dist < 120 && layan.dialogStep === 0) {
+                sounds.masa2o.play();
+                showDialog("مسائو سعودي!", [
+                    { text: "مسائو", action: () => { nextDialog(); } },
+                    { text: "مسائو يا قطوة", action: () => { sounds.meow.play(); nextDialog(); } }
+                ]);
+                layan.dialogStep = 1;
+            }
 
             worldObjects.forEach(obj => {
-                let d = Math.hypot((saad.x+30)-(obj.x+obj.w/2), (saad.y+40)-(obj.y+obj.h/2));
-                if (d < 45) {
+                if (Math.hypot((saad.x+30)-(obj.x+25), (saad.y+40)-(obj.y+25)) < 45) {
                     if (obj.type === 'shok') { 
-                        saad.dead = true; 
-                        sounds.hit.play();
-                        sounds.death.play();
+                        saad.dead = true; sounds.hit.play(); sounds.death.play();
                         document.getElementById('death-screen').style.display = 'flex'; 
                     }
-                    if (obj.type === 'mfta7' && !saad.hasKey) { saad.hasKey = true; uiHeader.innerText = "أخذت المفتاح! انزل تحت للكنز 📦"; }
+                    if (obj.type === 'mfta7' && !saad.hasKey) { 
+                        saad.hasKey = true; uiHeader.innerText = "أخذت المفتاح! انزل تحت للكنز 📦"; 
+                    }
                 }
             });
 
-            let dKnz = Math.hypot((saad.x+30)-(knzObj.x+45), (saad.y+40)-(knzObj.y+45));
-            if (dKnz < 45 && saad.hasKey && !saad.won) {
-                sounds.victory.play();
-                sounds.pop.play();
-                saad.won = true;
+            if (Math.hypot((saad.x+30)-(knzObj.x+45), (saad.y+40)-(knzObj.y+45)) < 45 && saad.hasKey && !saad.won) {
+                sounds.victory.play(); sounds.pop.play(); saad.won = true;
                 for(let i=0; i<100; i++) {
                     partyParticles.push({
                         x: knzObj.x + 45, y: knzObj.y + 45,
@@ -249,7 +232,6 @@
                     });
                 }
             }
-
             camera.x = saad.x - window.innerWidth / 2;
             camera.y = saad.y - window.innerHeight / 2;
         }
@@ -258,46 +240,30 @@
             ctx.imageSmoothingEnabled = false;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if (!gameRunning) { requestAnimationFrame(draw); return; }
-            
             ctx.save();
             ctx.translate(-camera.x, -camera.y);
             ctx.fillStyle = "#1b3022"; ctx.fillRect(saad.x-5000, saad.y-5000, 10000, 10000);
             shrubPos.forEach(s => { if(imgs.shrh.complete) ctx.drawImage(imgs.shrh, s.x, s.y, 40, 40); });
             ctx.fillStyle = "#333"; roads.forEach(r => ctx.fillRect(r.x, r.y, r.w, r.h));
-
-            let lImg = imgs.layw[layanChar.frame];
-            if (lImg?.complete) ctx.drawImage(lImg, layanChar.x, layanChar.y, layanChar.w, layanChar.h);
-
-            worldObjects.forEach(obj => {
-                if (obj.type === 'mfta7' && saad.hasKey) return;
-                if (imgs[obj.type]?.complete) ctx.drawImage(imgs[obj.type], obj.x, obj.y, obj.w, obj.h);
-            });
-
+            if (imgs.layw[layan.frame]?.complete) ctx.drawImage(imgs.layw[layan.frame], layan.x, layan.y, layan.w, layan.h);
+            worldObjects.forEach(obj => { if (obj.type === 'mfta7' && saad.hasKey) return; if (imgs[obj.type]?.complete) ctx.drawImage(imgs[obj.type], obj.x, obj.y, obj.w, obj.h); });
             let sImg = (saad.dir === 'side') ? imgs.side : imgs[saad.dir][saad.frame];
             if (sImg?.complete) {
                 ctx.save();
-                if (saad.dir === 'side' && saad.flip) {
-                    ctx.translate(saad.x + saad.w, saad.y); ctx.scale(-1, 1); ctx.drawImage(sImg, 0, 0, saad.w, saad.h);
-                } else {
-                    ctx.drawImage(sImg, saad.x, saad.y, saad.w, saad.h);
-                }
+                if (saad.dir === 'side' && saad.flip) { ctx.translate(saad.x+saad.w, saad.y); ctx.scale(-1, 1); ctx.drawImage(sImg, 0, 0, saad.w, saad.h); }
+                else { ctx.drawImage(sImg, saad.x, saad.y, saad.w, saad.h); }
                 ctx.restore();
             }
-
-            let kImg = saad.won ? imgs.knzOpen : imgs.knz;
-            if (kImg?.complete) ctx.drawImage(kImg, knzObj.x, knzObj.y, knzObj.w, knzObj.h);
+            if (imgs[saad.won?'knzOpen':'knz']?.complete) ctx.drawImage(imgs[saad.won?'knzOpen':'knz'], knzObj.x, knzObj.y, knzObj.w, knzObj.h);
             trees.forEach(t => { if (imgs.tree.complete) ctx.drawImage(imgs.tree, t.x, t.y, 150, 200); });
             partyParticles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.2; if(p.img.complete) ctx.drawImage(p.img, p.x, p.y, p.size, p.size); });
-
-            ctx.restore(); 
-
+            ctx.restore();
             if (saad.won) {
                 if (winScale < 1) winScale += 0.05;
-                ctx.save(); ctx.fillStyle = "#ffd700"; ctx.font = "bold 50px Arial"; ctx.textAlign = "center"; ctx.shadowBlur = 15; ctx.shadowColor = "black";
+                ctx.save(); ctx.fillStyle = "#ffd700"; ctx.font = "bold 50px Arial"; ctx.textAlign = "center";
                 ctx.translate(canvas.width / 2, canvas.height / 2); ctx.scale(winScale, winScale);
                 ctx.fillText("كل عام وأنت بخير سعودي 🎊", 0, 0); ctx.restore();
             }
-
             update(); requestAnimationFrame(draw);
         }
         draw();
