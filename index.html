@@ -19,7 +19,7 @@
 </head>
 <body>
     <div id="game-poster">
-        <h1>مغامرة سعدوي</h1>
+        <h1>مغامرة سعد</h1>
         <p>تصميم وإخراج : القطوه ليون</p>
         <button class="btn" onclick="startGame()">ابدأ المغامرة 🚀</button>
     </div>
@@ -77,25 +77,23 @@
     if (bg) {
         bg.muted = false; 
         bg.volume = 0.15; // خفضنا الصوت لـ 15% عشان تسمعين الأصوات الثانية
-        bg.play().catch(e => console.log("Video Error: " + e));
-    }
-}
-// نهاية دالة startGame في سطر 82
+      bg.play().catch(e => console.log("Video Error: " + e)); // سطر 80
+    } // سطر 81 (إغلاق الـ if)
+} // سطر 82 (إغلاق دالة startGame - تأكدي أنه لا يوجد قوس آخر تحت هذا القوس)
 
 // سطر 84: إعداد الصور (تأكدي أنه ليس داخل أي دالة)
 const assets = { 
-    front: ['saad1.png', 'saad2.png'], 
-    back: ['saadback1.png', 'saadback3.png'], 
-    side: 'saad4.png', 
-    layw: ['layw1.png', 'layw2.png', 'layw3.png'], 
-    mfta7: 'mfta7.png', 
-    knz: 'knz.png', 
-    knzOpen: 'knzopen.png', 
-    shok: 'shok.png', 
-    party1: 'party1.png', 
-    party2: 'party2.png' 
-};
-
+    front: ['saad1.png', 'saad2.png'],
+    back: ['saadback1.png', 'saadback3.png'],
+    side: 'saad4.png',
+    layw: ['layw1.png', 'layw2.png', 'layw3.png'],
+    mfta7: 'mfta7.png',
+    knz: 'knz.png',
+    knzOpen: 'knzopen.png',
+    shok: 'shok.png',
+    party1: 'party1.png',
+    party2: 'party2.png'
+}; // سطر 97 (تأكدي من وجود الفاصلة المنقوطة والقوس مرة واحدة فقط)
         const imgs = { front: [], back: [], layw: [] };
         Object.keys(assets).forEach(k => {
             if(Array.isArray(assets[k])) assets[k].forEach(src => { let i = new Image(); i.src = src; imgs[k].push(i); });
