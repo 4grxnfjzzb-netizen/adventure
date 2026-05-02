@@ -55,7 +55,6 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // إعداد الأصوات مع التأكد من اسم footstep.mp3
         const sounds = {
             masa2o: new Audio('masa2o.mp3'), meow: new Audio('meow.mp3'),
             teach: new Audio('teach.mp3'), mfta7_voice: new Audio('mfta7.mp3'),
@@ -64,7 +63,6 @@
             pop: new Audio('pop.mp3'), victory: new Audio('victory.mp3')
         };
 
-        // التحميل المسبق للأصوات لضمان عدم التأخير
         Object.values(sounds).forEach(s => { s.preload = 'auto'; s.load(); });
         sounds.walk.loop = true;
         sounds.walk.volume = 0.2;
@@ -73,14 +71,13 @@
         const keys = {};
 
         function startGame() { 
-            // فتح حظر الصوت فوراً مع أول ضغطة
             const bgVideo = document.getElementById('bg-video');
             if (bgVideo) {
                 bgVideo.muted = false;
                 bgVideo.play().catch(e => console.log("Video Playback Error"));
             }
             
-            // "إيقاظ" كل الأصوات برمجياً
+            // "إيقاظ" كل الأصوات لفتح المسار البرمجي
             Object.values(sounds).forEach(s => {
                 s.play().then(() => { s.pause(); s.currentTime = 0; }).catch(() => {});
             });
@@ -90,7 +87,6 @@
             gameRunning = true; 
         }
 
-        // أزرار الجوال
         if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
             document.getElementById('mobile-controls').style.display = 'grid';
         }
