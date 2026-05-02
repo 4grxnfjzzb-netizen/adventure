@@ -62,13 +62,20 @@
         Object.values(sounds).forEach(s => { s.load(); s.volume = 0.8; });
 
         let gameRunning = false;
-        function startGame() { 
-            document.getElementById('game-poster').style.display = 'none'; 
-            document.getElementById('ui-header').style.display = 'block';
-            gameRunning = true; 
-            const bg = document.getElementById('bg-video'); 
-            bg.muted = false; bg.volume = 0.15; bg.play();
-        }
+       function startGame() { 
+    // إخفاء بوستر البداية
+    document.getElementById('game-poster').style.display = 'none'; 
+    // إظهار شريط المهام العلوي
+    document.getElementById('ui-header').style.display = 'block';
+    
+    gameRunning = true; 
+    
+    // تشغيل فيديو الخلفية بصوت هادئ
+    const bg = document.getElementById('bg-video'); 
+    bg.muted = false; 
+    bg.volume = 0.15; // خفضنا الصوت لـ 15% عشان تسمعين الأصوات الثانية بوضوح
+    bg.play().catch(e => console.log("Video playback failed"));
+}
 
         // إعداد الصور
         const assets = { 
