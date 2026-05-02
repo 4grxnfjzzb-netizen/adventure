@@ -14,6 +14,20 @@
         #dialog-box { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: white; border: 4px solid #4B0082; padding: 20px; border-radius: 20px; width: 380px; text-align: center; display: none; z-index: 2000; color: #333; }
         .choice-btn { background: #4B0082; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 12px; cursor: pointer; }
         #ui-header { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: #ffd700; background: rgba(0,0,0,0.8); padding: 10px 30px; border-radius: 50px; border: 2px solid #ffd700; z-index: 100; display: none; }
+   /* أضفت لك تنسيق أزرار الجوال هنا */
+#mobile-controls {
+    position: absolute; bottom: 40px; left: 40px;
+    display: none; grid-template-columns: repeat(3, 70px);
+    gap: 10px; z-index: 4000;
+}
+.m-btn {
+    width: 70px; height: 70px; background: rgba(255, 215, 0, 0.3);
+    border: 2px solid #ffd700; border-radius: 50%; color: white;
+    font-size: 28px; display: flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-tap-highlight-color: transparent;
+    font-weight: bold;
+}
+.m-btn:active { background: rgba(255, 215, 0, 0.7); transform: scale(0.9); }
     </style>
 </head>
 <body>
@@ -28,10 +42,32 @@
     <div id="dialog-box"><div id="dialog-text"></div><div id="choices"></div></div>
     <div id="death-screen"><h1>عيد اللعبة يا غبي! 💀</h1><button class="poster-btn" onclick="location.reload()">إعادة المحاولة</button></div>
     <canvas id="gameCanvas"></canvas>
+    <div id="mobile-controls">
+    <button class="m-btn" style="grid-column: 2;" id="upBtn">▲</button>
+    <button class="m-btn" style="grid-column: 1;" id="leftBtn">◀</button>
+    <button class="m-btn" style="grid-column: 3;" id="rightBtn">▶</button>
+    <button class="m-btn" style="grid-column: 2;" id="downBtn">▼</button>
+</div>
 
    
 
     <script>
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    document.getElementById('mobile-controls').style.display = 'grid';
+}
+
+function bindMobileBtn(id, keyCode) {
+    const btn = document.getElementById(id);
+    if(btn) {
+        btn.addEventListener('touchstart', (e) => { e.preventDefault(); keys[keyCode] = true; });
+        btn.addEventListener('touchend', (e) => { e.preventDefault(); keys[keyCode] = false; });
+    }
+}
+
+bindMobileBtn('upBtn', 'ArrowUp');
+bindMobileBtn('downBtn', 'ArrowDown');
+bindMobileBtn('leftBtn', 'ArrowLeft');
+bindMobileBtn('rightBtn', 'ArrowRight');
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const poster = document.getElementById('game-poster');
