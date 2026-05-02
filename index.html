@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>مغامرة سعد - النسخة الكاملة الشاملة</title>
+    <title>مغامرة سعد - نسخة الاحتراف النهائية</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #1b3022; font-family: sans-serif; }
         canvas { display: block; }
@@ -63,12 +63,13 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
+        // إعداد الأصوات بالأسماء الجديدة
         const sounds = {
-            masa2o: new Audio(encodeURI('مسائو.mp3')),
-            meow: new Audio(encodeURI('ميو.mp3')),
-            teach: new Audio(encodeURI('تبي اعلمك.mp3')),
-            mfta7_voice: new Audio(encodeURI('المفتاح.mp3')),
-            dzha: new Audio(encodeURI('اجل دز امها.mp3')),
+            masa2o: new Audio('masa2o.mp3'),
+            meow: new Audio('meow.mp3'),
+            teach: new Audio('teach.mp3'),
+            mfta7_voice: new Audio('mfta7.mp3'),
+            dzha: new Audio('dzha.mp3'),
             death: new Audio('death.mp3'),
             walk: new Audio('footstep.mp3'),
             hit: new Audio('hit.mp3'),
@@ -80,12 +81,11 @@
         sounds.walk.volume = 0.15;
         sounds.walk.playbackRate = 1.8;
         
-        const charVol = 0.3;
-        sounds.masa2o.volume = charVol;
-        sounds.meow.volume = charVol;
-        sounds.teach.volume = charVol;
-        sounds.mfta7_voice.volume = charVol;
-        sounds.dzha.volume = charVol;
+        const charVol = 0.4;
+        Object.values(sounds).forEach(s => {
+            s.load();
+            if(s !== sounds.walk) s.volume = charVol;
+        });
 
         let gameRunning = false;
         function startGame() { 
@@ -123,7 +123,7 @@
         let winScale = 0;
         let isDialogActive = false;
         let shrubPos = [];
-        for(let i=0; i<1500; i++) { shrubPos.push({ x: Math.random()*10000-5000, y: Math.random()*8000-4000 }); }
+        for(let i=0; i<1000; i++) { shrubPos.push({ x: Math.random()*8000-4000, y: Math.random()*6000-3000 }); }
 
         const roads = [
             { x: 0, y: 350, w: 600, h: 180 }, { x: 500, y: 100, w: 160, h: 430 },
@@ -161,7 +161,7 @@
         function handleDialogLogic() {
             let dist = Math.hypot(saad.x - layanChar.x, saad.y - layanChar.y);
             if (dist < 120 && layanChar.dialogStep === 0 && !isDialogActive) {
-                sounds.masa2o.play();
+                sounds.masa2o.play().catch(e => console.log("Audio Play error"));
                 showDialog("مسائو سعودي!", [
                     { text: "مسائو", action: () => { nextDialog(); } },
                     { text: "مسائو يا قطوة", action: () => { sounds.meow.play(); nextDialog(); } }
