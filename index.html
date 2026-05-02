@@ -19,7 +19,7 @@
 </head>
 <body>
     <div id="game-poster">
-        <h1>مغامرة سعد</h1>
+        <h1>مغامرة ميو</h1>
         <p>تصميم وإخراج : القطوه ليوني</p>
 <button class="btn" onclick="startGame()">🚀 ابدأ المغامرة</button>    </div>
 
@@ -62,42 +62,52 @@
 
         let gameRunning = false;
     function startGame() { 
-    // 1. إخفاء الواجهة
-    const poster = document.getElementById('game-poster');
-    const ui = document.getElementById('ui-header');
-    if (poster) poster.style.display = 'none'; 
-    if (ui) ui.style.display = 'block';
+            // 1. إخفاء الواجهة
+            const poster = document.getElementById('game-poster');
+            const ui = document.getElementById('ui-header');
+            if (poster) poster.style.display = 'none'; 
+            if (ui) ui.style.display = 'block';
 
-    // 2. تفعيل تشغيل اللعبة
-    gameRunning = true; 
+            // 2. تفعيل تشغيل اللعبة
+            gameRunning = true; 
 
-    // 3. تشغيل صوت الخلفية (الفيديو)
-    const bg = document.getElementById('bg-video'); 
-    if (bg) {
-        bg.muted = false; 
-        bg.volume = 0.15; // خفضنا الصوت لـ 15% عشان تسمعين الأصوات الثانية
-      bg.play().catch(e => console.log("Video Error: " + e)); // سطر 80
-    } // سطر 81 (إغلاق الـ if)
-} // سطر 82 (إغلاق دالة startGame - تأكدي أنه لا يوجد قوس آخر تحت هذا القوس)
+            // 3. تشغيل صوت الخلفية (الفيديو)
+            const bg = document.getElementById('bg-video'); 
+            if (bg) {
+                bg.muted = false; 
+                bg.volume = 0.15; // خفضنا الصوت لـ 15% عشان تسمعين الأصوات الثانية
+                bg.play().catch(e => console.log("Video Error: " + e));
+            }
+        } // نهاية دالة startGame الصحيحة
 
-// سطر 84: إعداد الصور (تأكدي أنه ليس داخل أي دالة)
-const assets = { 
-    front: ['saad1.png', 'saad2.png'],
-    back: ['saadback1.png', 'saadback3.png'],
-    side: 'saad4.png',
-    layw: ['layw1.png', 'layw2.png', 'layw3.png'],
-    mfta7: 'mfta7.png',
-    knz: 'knz.png',
-    knzOpen: 'knzopen.png',
-    shok: 'shok.png',
-    party1: 'party1.png',
-    party2: 'party2.png'
-}; // سطر 97 (تأكدي من وجود الفاصلة المنقوطة والقوس مرة واحدة فقط)
+        // إعداد الصور (يجب أن يكون خارج الدالة تماماً)
+        const assets = { 
+            front: ['saad1.png', 'saad2.png'], 
+            back: ['saadback1.png', 'saadback3.png'], 
+            side: 'saad4.png', 
+            layw: ['layw1.png', 'layw2.png', 'layw3.png'], 
+            mfta7: 'mfta7.png', 
+            knz: 'knz.png', 
+            knzOpen: 'knzopen.png', 
+            shok: 'shok.png', 
+            party1: 'party1.png', 
+            party2: 'party2.png' 
+        };
+
         const imgs = { front: [], back: [], layw: [] };
         Object.keys(assets).forEach(k => {
-            if(Array.isArray(assets[k])) assets[k].forEach(src => { let i = new Image(); i.src = src; imgs[k].push(i); });
-            else { imgs[k] = new Image(); imgs[k].src = assets[k]; }
+            if(Array.isArray(assets[k])) {
+                assets[k].forEach(src => { 
+                    let i = new Image(); 
+                    i.src = src; 
+                    imgs[k].push(i); 
+                });
+            } else { 
+                imgs[k] = new Image(); 
+                imgs[k].src = assets[k]; 
+            }
         });
+     
 
         // حالة اللعبة
         let saad = { x: 50, y: 400, w: 60, h: 80, speed: 7, dir: 'front', frame: 0, flip: false, hasKey: false, won: false, dead: false, moveTimer: 0 };
