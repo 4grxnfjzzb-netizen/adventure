@@ -105,17 +105,25 @@ bindMobileBtn('rightBtn', 'ArrowRight');
         sounds.teach.volume = charVol;
         sounds.mfta7_voice.volume = charVol;
         sounds.dzha.volume = charVol;
+        sounds.walk.preload = 'auto'; // يخلي ملف المشي يتحمل في الذاكرة فوراً
 
         let gameRunning = false;
-        function startGame() { 
-            poster.style.display = 'none'; 
-            uiHeader.style.display = 'block'; 
-            gameRunning = true; 
-            const bgVideo = document.getElementById('bg-video');
-            bgVideo.volume = 0.3; 
-            bgVideo.muted = false;
-            bgVideo.play().catch(e => console.log("Video Playback Error"));
-        }
+      function startGame() { 
+    // 1. إخفاء الواجهة وإظهار المهمة
+    poster.style.display = 'none'; 
+    uiHeader.style.display = 'block'; 
+    gameRunning = true; 
+
+    // 2. تشغيل صوت الخلفية (الفيديو) بدون تكرار
+    const bgVideo = document.getElementById('bg-video');
+    if (bgVideo) {
+        bgVideo.muted = false; // تأكدي إنه مو صامت
+        bgVideo.volume = 0.3; 
+        bgVideo.load(); // تحميل سريع
+        bgVideo.play().catch(e => console.log("Video Playback Error"));
+    }
+} // نهاية الدالة في سطر 124
+        
 
         const assets = {
             front: ['saad1.png', 'saad2.png'],
