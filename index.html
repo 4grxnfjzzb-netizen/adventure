@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>مغامرة سعد - النسخة الكاملة النهائية</title>
+    <title>مغامرة سعد - النسخة الكاملة الشاملة</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #1b3022; font-family: sans-serif; }
         canvas { display: block; }
@@ -40,22 +40,13 @@
         <button class="poster-btn" onclick="startGame()">ابدأ المغامرة 🚀</button>
     </div>
 
-    <!-- فيديو الخلفية المخفي للموسيقى -->
     <video id="bg-video" loop muted playsinline style="display:none;">
         <source src="realx.mp4" type="video/mp4">
     </video>
 
     <div id="ui-header">المهمة: ابحث عن المفتاح 🗝️</div>
-    
-    <div id="dialog-box">
-        <div id="dialog-text"></div>
-        <div id="choices"></div>
-    </div>
-
-    <div id="death-screen">
-        <h1>عيد اللعبة يا غبي! 💀</h1>
-        <button class="poster-btn" onclick="location.reload()">إعادة المحاولة</button>
-    </div>
+    <div id="dialog-box"><div id="dialog-text"></div><div id="choices"></div></div>
+    <div id="death-screen"><h1>عيد اللعبة يا غبي! 💀</h1><button class="poster-btn" onclick="location.reload()">إعادة المحاولة</button></div>
 
     <canvas id="gameCanvas"></canvas>
 
@@ -72,7 +63,6 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // 1. تعريف كل الأصوات (بما فيها الجديدة)
         const sounds = {
             masa2o: new Audio(encodeURI('مسائو.mp3')),
             meow: new Audio(encodeURI('ميو.mp3')),
@@ -86,22 +76,18 @@
             victory: new Audio('victory.mp3')
         };
 
-        // إعدادات الصوت (توازن المستويات وتسريع المشي)
         sounds.walk.loop = true;
         sounds.walk.volume = 0.15;
         sounds.walk.playbackRate = 1.8;
         
-        const charVol = 0.3; // خفض صوت حوارات ليان
+        const charVol = 0.3;
         sounds.masa2o.volume = charVol;
         sounds.meow.volume = charVol;
         sounds.teach.volume = charVol;
         sounds.mfta7_voice.volume = charVol;
         sounds.dzha.volume = charVol;
-        sounds.pop.volume = 0.6;
-        sounds.victory.volume = 0.6;
 
         let gameRunning = false;
-        
         function startGame() { 
             poster.style.display = 'none'; 
             uiHeader.style.display = 'block'; 
@@ -112,7 +98,6 @@
             bgVideo.play().catch(e => console.log("Video Playback Error"));
         }
 
-        // 2. تحميل الصور
         const assets = {
             front: ['saad1.png', 'saad2.png'],
             back: ['saadback1.png', 'saadback3.png'],
@@ -131,7 +116,6 @@
             if(!Array.isArray(assets[k])) { imgs[k] = new Image(); imgs[k].src = assets[k]; }
         });
 
-        // 3. حالة اللعبة
         let saad = { x: 50, y: 400, w: 60, h: 80, speed: 7, dir: 'front', frame: 0, flip: false, hasKey: false, won: false, dead: false, moveTimer: 0 };
         let layanChar = { x: 550, y: 150, w: 90, h: 120, frame: 0, timer: 0, dialogStep: 0 };
         let camera = { x: 0, y: 0 };
@@ -158,7 +142,6 @@
         let knzObj = { x: 650, y: 1220, w: 90, h: 90 };
         let trees = [{ x: -300, y: 100 }, { x: 100, y: 100 }, { x: 1600, y: 200 }, { x: 1100, y: 600 }, { x: 300, y: 1300 }, { x: 1000, y: 1300 }];
 
-        // 4. نظام الحوارات
         function showDialog(text, choices) {
             isDialogActive = true;
             dialogText.innerText = text;
@@ -210,7 +193,6 @@
         window.onkeydown = e => keys[e.code] = true;
         window.onkeyup = e => keys[e.code] = false;
 
-        // 5. محرك التحديث والرسم
         function update() {
             if (!gameRunning || saad.dead || saad.won || isDialogActive) {
                 sounds.walk.pause();
@@ -228,13 +210,12 @@
                 if (sounds.walk.paused) sounds.walk.play().catch(e => {});
                 saad.moveTimer++;
                 if (saad.moveTimer % 12 === 0) saad.frame = (saad.frame + 1) % 2;
+                if (roads.some(r => (nextX+30) >= r.x && (nextX+30) <= r.x+r.w && (nextY+70) >= r.y && (nextY+70) <= r.y+r.h)) {
+                    saad.x = nextX; saad.y = nextY;
+                }
             } else {
                 sounds.walk.pause();
                 saad.frame = 0;
-            }
-
-            if (roads.some(r => (nextX+30) >= r.x && (nextX+30) <= r.x+r.w && (nextY+70) >= r.y && (nextY+70) <= r.y+r.h)) {
-                saad.x = nextX; saad.y = nextY;
             }
 
             layanChar.timer++;
@@ -247,23 +228,18 @@
                 if (d < 45) {
                     if (obj.type === 'shok') { 
                         saad.dead = true; 
-                        sounds.hit.play(); // الصوت الجديد للمس الشوك
+                        sounds.hit.play();
                         sounds.death.play();
                         document.getElementById('death-screen').style.display = 'flex'; 
                     }
-                    if (obj.type === 'mfta7' && !saad.hasKey) { 
-                        saad.hasKey = true; 
-                        uiHeader.innerText = "أخذت المفتاح! انزل تحت للكنز 📦"; 
-                    }
+                    if (obj.type === 'mfta7' && !saad.hasKey) { saad.hasKey = true; uiHeader.innerText = "أخذت المفتاح! انزل تحت للكنز 📦"; }
                 }
             });
 
             let dKnz = Math.hypot((saad.x+30)-(knzObj.x+45), (saad.y+40)-(knzObj.y+45));
-            if (dKnz < 45 && saad.hasKey) {
-                if (!saad.won) {
-                    sounds.victory.play(); // الصوت الجديد للفوز
-                    sounds.pop.play();     // الصوت الجديد للبوب
-                }
+            if (dKnz < 45 && saad.hasKey && !saad.won) {
+                sounds.victory.play();
+                sounds.pop.play();
                 saad.won = true;
                 for(let i=0; i<100; i++) {
                     partyParticles.push({
@@ -285,7 +261,6 @@
             
             ctx.save();
             ctx.translate(-camera.x, -camera.y);
-
             ctx.fillStyle = "#1b3022"; ctx.fillRect(saad.x-5000, saad.y-5000, 10000, 10000);
             shrubPos.forEach(s => { if(imgs.shrh.complete) ctx.drawImage(imgs.shrh, s.x, s.y, 40, 40); });
             ctx.fillStyle = "#333"; roads.forEach(r => ctx.fillRect(r.x, r.y, r.w, r.h));
