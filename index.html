@@ -211,20 +211,25 @@
             });
 
             // فتح الكنز
-            if (Math.hypot((saad.x+30)-(knzObj.x+45), (saad.y+40)-(knzObj.y+45)) < 45 && saad.hasKey && !saad.won) {
-                sounds.victory.play(); 
-                sounds.pop.play(); 
-                saad.won = true;
-                for(let i=0; i<80; i++) partyParticles.push({ 
-                    x: knzObj.x+45, y: knzObj.y+45, 
-                    vx: (Math.random()-0.5)*15, vy: (Math.random()-1)*12, 
-                    img: Math.random()>0.5?imgs.party1:imgs.party2, size: Math.random()*20+10 
-                });
-            }
-            camera.x = saad.x - window.innerWidth/2; 
-            camera.y = saad.y - window.innerHeight/2;
-        }
-
+            // البحث عن هذا الجزء داخل دالة update واستبداله
+if (Math.hypot((saad.x + 30) - (knzObj.x + 45), (saad.y + 40) - (knzObj.y + 45)) < 45 && saad.hasKey && !saad.won) {
+    // تشغيل أصوات الاحتفالية فوراً
+    sounds.victory.play().catch(e => console.log("Victory Sound Error")); 
+    sounds.pop.play().catch(e => console.log("Pop Sound Error")); 
+    
+    saad.won = true;
+    
+    // إنشاء جزيئات الاحتفال
+    for(let i = 0; i < 80; i++) {
+        partyParticles.push({ 
+            x: knzObj.x + 45, y: knzObj.y + 45, 
+            vx: (Math.random() - 0.5) * 15, 
+            vy: (Math.random() - 1) * 12, 
+            img: Math.random() > 0.5 ? imgs.party1 : imgs.party2, 
+            size: Math.random() * 20 + 10 
+        });
+    }
+}
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height); 
             if (!gameRunning) { requestAnimationFrame(draw); return; }
